@@ -7,8 +7,7 @@
       </form>
       <button @click='regis'>确认</button>
       <span class='one'>注册</span>
-      <span>找回密码</span>
-      <span>其他登录..</span>
+
     </div>
   </div>
 </template>
