@@ -10,7 +10,7 @@
     </div>
 </template>
 <script>
-import { quillEditor } from "../richtext/node_modules/vue-quill-editor"; //调用编辑器
+import { quillEditor } from "../richtext/node_modules/vue-quill-editor"; 
 import '../richtext/node_modules/quill/dist/quill.core.css';
 import '../richtext/node_modules/quill/dist/quill.snow.css';
 import '../richtext/node_modules/quill/dist/quill.bubble.css';
