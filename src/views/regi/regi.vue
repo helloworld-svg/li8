@@ -7,7 +7,7 @@
       </form>
       <button @click='regis'>确认</button>
       <span class='one'>注册</span>
-
+      <span>找回密码</span>
     </div>
   </div>
 </template>
@@ -42,7 +42,7 @@ form{
 }
 input{
   width:70%;
-  height:25px;
+  height:30px;
   margin:10px auto 0px;
   display: block;
   outline: none;
