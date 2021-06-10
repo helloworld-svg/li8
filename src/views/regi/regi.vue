@@ -1,23 +1,23 @@
 <template>
   <div id="regis">
-    <div class="regis_b" v-show="false">
+    <div class="regis_b" v-show="regi_sty">
       <form>
         <input type="text" placeholder="请输入邮箱" v-model="regi.text" />
         <input type="password" placeholder="请输入密码" v-model="regi.password" />
       </form>
-      <button @click="regis(1)">确认</button>
+      <button @click="regis(1)" class='buttons'>确认</button>
       <span class="one" @click="regits()">注册</span>
       <span>找回密码</span>
     </div>
-    <div class="regis_b">
+    <div class="regis_b" v-show='!regi_sty'>
       <form>
         <input type="text" placeholder="请输入邮箱" v-model="regit.text" />
         <input type="password" placeholder="请输入密码" v-model="regit.password" />
         <input type="text" placeholder="请输入验证码" v-model="regit.veri" />
       </form>
       <div id="buttons">
-        <button @click="veris()">获取邮箱验证码</button>
-        <button @click="regis(0)">确认</button>
+        <button @click="veris()" class='buttonsm'>获取邮箱验证码</button>
+        <button @click="regis(0)" class='buttonsm'>确认</button>
       </div>
     </div>
   </div>
@@ -36,7 +36,13 @@ export default {
         password: null,
         veri: null,
       },
+      regi_sty:true,
     };
+  },
+  mounted(){
+    if(this.$route.params.title==0){
+      this.regits()
+    }
   },
   methods: {
     regis(data) {
@@ -47,11 +53,13 @@ export default {
           if(this.regi.password){
             this.$https
             .post("/login/", {
-              email: this.text,
-              password: this.password,
+              email: this.regi.text,
+              password: this.regi.password,
             })
             .then((res) => {
-              this.open1(res.msg + "，请点击注册");
+              this.open1(res.msg);
+              this.regi.text=null
+              this.regi.password=null
             });
           }else{
             this.open1('密码格式错误')
@@ -67,8 +75,11 @@ export default {
             emailcode: this.regit.veri,
           })
           .then((res) => {
-            console.log(res);
+              this.regits()
             this.open1(res.msg)
+            this.regit.text=null
+            this.regit.password=null
+            this.regit.veri=null
           });
       }
     },
@@ -79,7 +90,9 @@ export default {
         message: h("i", { style: "color: teal" }, data),
       });
     },
-    regits() {},
+    regits() {
+      this.regi_sty=!this.regi_sty
+    },
     veris() {
       this.$https
         .get(`/register/email?email=1399149390@qq.com`)
@@ -118,7 +131,7 @@ input {
   display: block;
   outline: none;
 }
-button {
+.buttonsm {
   border: 0px;
   background: #409eff;
   display: block;
@@ -130,6 +143,18 @@ button {
   float: left;
   margin: 0px 10px 0px;
   font-size: 12px;
+}
+.buttons{
+  border: 0px;
+  background: #409eff;
+  display: block;
+  color: #fff;
+  width: 70px;
+  height: 35px;
+  border-radius: 5px;
+  outline: none;
+  margin: 30px auto 0px;
+  font-size: 15px;
 }
 .one {
   padding-left: 110px;

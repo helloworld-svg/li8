@@ -2,8 +2,8 @@
   <div id='headers'>
     <a href="tel:515528129">点击联系我们</a>
     <ul>
-      <li @mousedown="regi()">登录</li>
-      <li>注册</li>
+      <li @mousedown="regi(1)">登录</li>
+      <li @mousedown='regi(0)'>注册</li>
       <li>发表论文</li>
     </ul>
   </div>
@@ -12,9 +12,12 @@
 <script>
 export default {
   methods:{
-    regi(){
+    regi(data){
       this.$router.push({
-        name:'regi'
+        name:'regi',
+        params:{
+          title:data
+        }
       })
     }
   }
