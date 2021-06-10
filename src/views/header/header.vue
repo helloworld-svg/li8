@@ -4,6 +4,7 @@
     <ul>
       <li @mousedown="regi(1)">登录</li>
       <li @mousedown='regi(0)'>注册</li>
+      <li>我的</li>
       <li>发表论文</li>
     </ul>
   </div>
