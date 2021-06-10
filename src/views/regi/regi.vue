@@ -1,13 +1,21 @@
 <template>
   <div id="regis">
-    <div id="regis_b">
+    <div class="regis_b" v-show="false">
       <form>
-        <input type="text" placeholder="请输入邮箱" v-model="text" />
-        <input type="text" placeholder="请输入密码" v-model="password" />
+        <input type="text" placeholder="请输入邮箱" v-model="regi.text" />
+        <input type="text" placeholder="请输入密码" v-model="regi.password" />
       </form>
-      <button @click="regis()">确认</button>
-      <span class="one">注册</span>
+      <button @click="regis(1)">确认</button>
+      <span class="one" @click="regit()">注册</span>
       <span>找回密码</span>
+    </div>
+    <div class="regis_b">
+      <form>
+        <input type="text" placeholder="请输入邮箱" v-model="regit.text" />
+        <input type="text" placeholder="请输入密码" v-model="regit.password" />
+        <input type="text" placeholder="请输入验证码" v-model="regit.veri" />
+      </form>
+      <button @click="regis(0)">确认</button>
     </div>
   </div>
 </template>
@@ -16,26 +24,43 @@
 export default {
   data() {
     return {
-      text: null,
-      password: null,
+      regi: {
+        text: null,
+        password: null,
+      },
+      regit: {
+        text: null,
+        password: null,
+        veri: null,
+      },
     };
   },
   methods: {
-    regis() {
-      const regEmail =
-        /^([a-zA-Z]|[0-9])(\w|-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
-      if (regEmail.test(this.text)) {
-        this.$https
-          .post("/login/", {
-            email: this.text,
-            password: this.password,
-          })
-          .then((res) => {
-            console.log(res);
-            this.open1(res.msg+'请点击注册')
-          });
+    regis(data) {
+      if (data == 1) {
+        const regEmail =
+          /^([a-zA-Z]|[0-9])(\w|-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+        if (regEmail.test(this.text)) {
+          this.$https
+            .post("/login/", {
+              email: this.text,
+              password: this.password,
+            })
+            .then((res) => {
+              console.log(res);
+              this.open1(res.msg + "，请点击注册");
+            });
+        } else {
+          this.open1("请填写正确的邮箱名");
+        }
       } else {
-        this.open1('邮箱名错误')
+        this.$https.post('/register/',{
+          email:regit.text,
+          password:regit.password,
+          emailcode:regit.veri,
+        }).then((res)=>{
+          console.log(res);
+        })
       }
     },
     open1(data) {
@@ -43,11 +68,7 @@ export default {
 
       this.$notify({
         title: "警告",
-        message: h(
-          "i",
-          { style: "color: teal" },
-          data
-        ),
+        message: h("i", { style: "color: teal" }, data),
       });
     },
   },
@@ -62,7 +83,7 @@ export default {
   background-size: 100% 100%;
   position: relative;
 }
-#regis_b {
+.regis_b {
   width: 500px;
   height: 320px;
   background: rgb(255, 255, 255, 0.8);

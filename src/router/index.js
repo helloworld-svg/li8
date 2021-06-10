@@ -25,6 +25,8 @@ const routes = [
     name: 'rach',
     component: () => import('../views/rach/Rach.vue')
   },
+  
+  
 ]
 
 const router = new VueRouter({
