@@ -1,32 +1,43 @@
 <template>
   <div id="regis">
-    <div class="regis_b" v-show="regi_sty">
-      <form>
-        <input type="text" placeholder="请输入邮箱" v-model="regi.text" />
-        <input type="password" placeholder="请输入密码" v-model="regi.password" />
-      </form>
-      <button @click="regis(1)" class='buttons'>确认</button>
-      <span class="one" @click="regits()">注册</span>
-      <span>找回密码</span>
-    </div>
-    <div class="regis_b" v-show='!regi_sty'>
-      <form>
-        <input type="text" placeholder="请输入邮箱" v-model="regit.text" />
-        <input type="password" placeholder="请输入密码" v-model="regit.password" />
-        <input type="text" placeholder="请输入验证码" v-model="regit.veri" />
-      </form>
-      <div id="buttons">
-        <button @click="veris()" class='buttonsm'>获取邮箱验证码</button>
-        <button @click="regis(0)" class='buttonsm'>确认</button>
+    <div v-show="user_sty">
+      <div class="regis_b" v-show="regi_sty">
+        <form>
+          <input type="text" placeholder="请输入邮箱" v-model="regi.text" />
+          <input type="password" placeholder="请输入密码" v-model="regi.password" />
+        </form>
+        <button @click="regis(1)" class="buttons">确认</button>
+        <span class="one" @click="regits()">注册</span>
+        <span>找回密码</span>
       </div>
+      <div class="regis_b" v-show="!regi_sty">
+        <form>
+          <input type="text" placeholder="请输入邮箱" v-model="regit.text" />
+          <input type="password" placeholder="请输入密码" v-model="regit.password" />
+          <input type="text" placeholder="请输入验证码" v-model="regit.veri" />
+        </form>
+        <div id="buttons">
+          <button @click="veris()" class="buttonsm">获取邮箱验证码</button>
+          <button @click="regis(0)" class="buttonsm">确认</button>
+        </div>
+      </div>
+    </div>
+    <div v-show="!user_sty" class="regis_b_false">
+      尊敬的：&nbsp;{{$store.state.token}}&nbsp;&nbsp;&nbsp;&nbsp;您好
+      <br />您已登录，无需再次登录，如需切换账号，请点击下方按钮
+      <br />
+      <br />
+      <button class="buttons" @click="user_quit()">退出</button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   data() {
     return {
+      user_sty: true,
       regi: {
         text: null,
         password: null,
@@ -36,12 +47,21 @@ export default {
         password: null,
         veri: null,
       },
-      regi_sty:true,
+      regi_sty: true,
     };
   },
-  mounted(){
-    if(this.$route.params.title==0){
-      this.regits()
+  computed: {
+    ...mapState(["token"]),
+  },
+  mounted() {
+    if (this.$route.params.title == 0) {
+      this.regits();
+    }
+    console.log(localStorage.getItem("user_name"));
+    localStorage.getItem("user_name") &&
+      this.$store.commit("token_it", localStorage.getItem("user_name"));
+    if (localStorage.getItem("user_name")) {
+      this.user_sty = !this.user_sty;
     }
   },
   methods: {
@@ -50,19 +70,26 @@ export default {
         const regEmail =
           /^([a-zA-Z]|[0-9])(\w|-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
         if (regEmail.test(this.regi.text)) {
-          if(this.regi.password){
+          if (this.regi.password) {
             this.$https
-            .post("/login/", {
-              email: this.regi.text,
-              password: this.regi.password,
-            })
-            .then((res) => {
-              this.open1(res.msg);
-              this.regi.text=null
-              this.regi.password=null
-            });
-          }else{
-            this.open1('密码格式错误')
+              .post("/login/", {
+                email: this.regi.text,
+                password: this.regi.password,
+              })
+              .then((res) => {
+                if (res.code == 0) {
+                  localStorage.setItem("token", res.info.token);
+                  localStorage.setItem("user_name", this.regi.text);
+                  this.$router.push({
+                    name: "Home",
+                  });
+                }
+                this.open1(res.msg);
+                this.regi.text = null;
+                this.regi.password = null;
+              });
+          } else {
+            this.open1("密码格式错误");
           }
         } else {
           this.open1("请填写正确的邮箱名");
@@ -75,11 +102,11 @@ export default {
             emailcode: this.regit.veri,
           })
           .then((res) => {
-              this.regits()
-            this.open1(res.msg)
-            this.regit.text=null
-            this.regit.password=null
-            this.regit.veri=null
+            this.regits();
+            this.open1(res.msg);
+            this.regit.text = null;
+            this.regit.password = null;
+            this.regit.veri = null;
           });
       }
     },
@@ -91,14 +118,20 @@ export default {
       });
     },
     regits() {
-      this.regi_sty=!this.regi_sty
+      this.regi_sty = !this.regi_sty;
     },
     veris() {
-      this.$https
-        .get(`/register/email?email=1399149390@qq.com`)
-        .then((res) => {
-          this.open1(res.msg)
-        });
+      this.$https.get(`/register/email?email=1399149390@qq.com`).then((res) => {
+        this.open1(res.msg);
+      });
+    },
+    user_quit() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user_name");
+      this.open1('已退出')
+      this.$router.push({
+        name: "Home",
+      });
     },
   },
 };
@@ -120,6 +153,18 @@ export default {
   right: 30%;
   top: 15%;
   border-radius: 5px;
+}
+.regis_b_false {
+  width: 500px;
+  height: 280px;
+  background: rgb(255, 255, 255, 0.8);
+  position: absolute;
+  right: 30%;
+  top: 15%;
+  border-radius: 5px;
+  text-align: center;
+  padding-top: 40px;
+  font-size: 14px;
 }
 form {
   margin-top: 40px;
@@ -144,7 +189,7 @@ input {
   margin: 0px 10px 0px;
   font-size: 12px;
 }
-.buttons{
+.buttons {
   border: 0px;
   background: #409eff;
   display: block;

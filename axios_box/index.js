@@ -1,4 +1,4 @@
-import axios from 'e:/vuejs/vue_axios/node_modules/axios';  
+import axios from 'e:/vuejs/vue_axios/node_modules/axios';
 import qs from 'qs'; // 是一个增加了一些安全性的查询字符串解析和序列化字符串的库
 import { Loading, Notification } from 'e:/vuejs/element ui/node_modules/element-ui';
 
@@ -13,16 +13,17 @@ axios.defaults.baseURL = 'http://8.131.78.129:3000'; //域名 若使用代理跨
 var loading = null;
 // 请求前调用
 axios.interceptors.request.use(
-    (config) => {
+    config => {
         config.data = qs.stringify(config.data); //公共参数
         config.headers = {  //配置请求头
             // formData
             'Content-Type': 'application/x-www-form-urlencoded' //请求方式
         }
+        
         loading = Loading.service({
-            text: 'Loading...',
+            text: '加载中，请稍后...',
             spinner: 'el-icon-loading',
-            background: 'rgba(0, 0, 0, 0.5)'
+            background: 'rgba(8, 8, 8, 0.5)'
         })
         return config;
     }
@@ -148,7 +149,7 @@ export default {
      * @returns {Promise}
      */
     // params = {}默认参数
-    get: function(url, params = {}) {
+    get: function (url, params = {}) {
         let publics = { //公共参数
             tokenid: sessionStorage.getItem('token') || "",
             lang: sessionStorage.getItem('language')
@@ -182,7 +183,7 @@ export default {
      * @returns {Promise}
      */
 
-    post: function(url, data = {}) {
+    post: function (url, data = {}) {
         let publics = { //公共参数
             tokenid: sessionStorage.getItem('token') || "",
             lang: sessionStorage.getItem('language')
@@ -206,7 +207,7 @@ export default {
      * @returns {Promise}
      */
 
-    patch: function(url, data = {}) {
+    patch: function (url, data = {}) {
         return new Promise((resolve, reject) => {
             axios.patch(url, data)
                 .then(response => {
@@ -226,7 +227,7 @@ export default {
      * @returns {Promise}
      */
 
-    put: function(url, data = {}) {
+    put: function (url, data = {}) {
         return new Promise((resolve, reject) => {
             axios.put(url, data)
                 .then(response => {
