@@ -6,11 +6,11 @@
       <li @mousedown="regi(0)">注册</li>
       <li id="me_box">
         我的
-        <div class="me" v-if="token">
+        <div class="me" v-if="tokens">
           <p>
             您好，尊敬的：
             <br />
-            {{token}}
+            {{tokens}}
             <br />退出
           </p>
         </div>
@@ -27,9 +27,13 @@
 <script>
 import { mapState } from "vuex";
 export default {
+  data(){
+    return{
+      tokens:null
+    }
+  },
   mounted() {
-    console.log(localStorage.getItem('user_name'));
-    localStorage.getItem('user_name') && this.$store.commit('token_it', localStorage.getItem('user_name'));
+    this.token_it();
   },
   methods: {
     regi(data) {
@@ -48,6 +52,12 @@ export default {
         });
       } else {
         this.open1("请先登录");
+      }
+    },
+    token_it() {
+      if (localStorage.getItem("user_name")) {
+        this.tokens=localStorage.getItem("user_name")
+        console.log(this.tokens);
       }
     },
     open1(data) {

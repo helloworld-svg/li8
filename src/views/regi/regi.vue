@@ -23,7 +23,7 @@
       </div>
     </div>
     <div v-show="!user_sty" class="regis_b_false">
-      尊敬的：&nbsp;{{$store.state.token}}&nbsp;&nbsp;&nbsp;&nbsp;您好
+      尊敬的：&nbsp;{{user_name}}&nbsp;&nbsp;&nbsp;&nbsp;您好
       <br />您已登录，无需再次登录，如需切换账号，请点击下方按钮
       <br />
       <br />
@@ -48,6 +48,7 @@ export default {
         veri: null,
       },
       regi_sty: true,
+      user_name:null,
     };
   },
   computed: {
@@ -57,10 +58,8 @@ export default {
     if (this.$route.params.title == 0) {
       this.regits();
     }
-    console.log(localStorage.getItem("user_name"));
-    localStorage.getItem("user_name") &&
-      this.$store.commit("token_it", localStorage.getItem("user_name"));
     if (localStorage.getItem("user_name")) {
+      this.user_name=localStorage.getItem('user_name')
       this.user_sty = !this.user_sty;
     }
   },

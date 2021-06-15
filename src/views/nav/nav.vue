@@ -3,7 +3,7 @@
     <img src="@/img/tpy.png" id="logo" />
     <ul id="classify">
       <li v-for='(item,x) in classify' :key='x'>
-          {{item}}
+          {{item.name}}
       </li>
     </ul>
   </div>
@@ -11,6 +11,13 @@
 
 <script>
 export default {
+  mounted(){
+    this.$https.get('/category/').then(
+      (res)=>{
+        this.classify=res.data
+      }
+    )
+  },
   data() {
     return {
         classify:['专题类','论辩类','综述类','综合性','数学','物理','化学','历史']

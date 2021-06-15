@@ -15,11 +15,11 @@ var loading = null;
 axios.interceptors.request.use(
     config => {
         config.data = qs.stringify(config.data); //公共参数
+        let token=localStorage.getItem('token')
         config.headers = {  //配置请求头
-            // formData
-            'Content-Type': 'application/x-www-form-urlencoded' //请求方式
+            'Content-Type': 'application/x-www-form-urlencoded' ,//请求方式
+            'x-token':token
         }
-        
         loading = Loading.service({
             text: '加载中，请稍后...',
             spinner: 'el-icon-loading',
