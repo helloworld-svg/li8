@@ -79,6 +79,7 @@ export default {
                 if (res.code == 0) {
                   localStorage.setItem("token", res.info.token);
                   localStorage.setItem("user_name", this.regi.text);
+                  this.$store.commit('tokens_sty',this.regi.text)
                   this.$router.push({
                     name: "Home",
                   });
@@ -127,6 +128,7 @@ export default {
     user_quit() {
       localStorage.removeItem("token");
       localStorage.removeItem("user_name");
+      this.$store.commit('tokens_sty',null)
       this.open1('已退出')
       this.$router.push({
         name: "Home",

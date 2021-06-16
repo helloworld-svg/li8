@@ -1,11 +1,5 @@
 <template>
   <div>
-    <div id="header">
-      <headers></headers>
-    </div>
-    <div id="nav">
-      <navs></navs>
-    </div>
     <div id="banner">
       <banner></banner>
     </div>
@@ -16,14 +10,11 @@
 </template>
 
 <script>
-import headers from "../views/header/header.vue";
-import navs from "../views/nav/nav.vue";
+
 import banner from "../views/banner/banner.vue";
 import prin from "../views/principal/prin.vue";
 export default {
   components: {
-    headers,
-    navs,
     banner,
     prin,
   },
